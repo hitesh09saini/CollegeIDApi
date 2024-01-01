@@ -1,4 +1,4 @@
-
+require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -9,7 +9,7 @@ const app = express();
 
 // 
 const corsOptions = {
-    origin: [process.env.CLIENT_URL],
+    origin: process.env.CLIENT_URL,
     credentials: true, // Use 'credentials' instead of 'Credentials'
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Explicitly specify allowed methods
 };
