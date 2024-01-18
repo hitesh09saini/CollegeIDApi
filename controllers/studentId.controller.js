@@ -214,7 +214,7 @@ const getProfile = asyncHandler(async (req, res, next) => {
 
 // get all students
 const getAll = asyncHandler(async (req, res, next) => {
-    const college = await College.findById(req.body.id);
+    const college = await College.findById(req.params.id);
     if (!college) {
         return next(new AppError('College not found', 404));
     }

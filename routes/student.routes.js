@@ -27,7 +27,7 @@ router.route('/following/:myId')
 router.route('/getIDs')
 .get(getProfile)
 
-router.route('/getStudents')
+router.route('/getStudents/:id')
 .get(getAll)
 
 module.exports = router;
