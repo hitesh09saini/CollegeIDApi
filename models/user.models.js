@@ -9,16 +9,16 @@ const crypto = require('crypto');
 
 
 const userSchema = new Schema({
-    name:{ 
-      type:String,
-      required: true,
+    name: {
+        type: String,
+        required: true,
     },
     username: {
-      type: String,
-      unique: true,
-      required: true,
-      lowercase: true,
-      trim: true,
+        type: String,
+        unique: true,
+        required: true,
+        lowercase: true,
+        trim: true,
     },
     email: {
         type: String,
@@ -39,6 +39,10 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Student',
     }],
+
+    forgotPasswordExpiry: String,
+    forgotPasswordOTP: String,
+
 }, {
     timestamps: true,
 });
@@ -54,29 +58,42 @@ userSchema.pre('save', async function (next) {
 
 userSchema.methods = {
     generateJETToken: async function () {
-
-        return await jwt.sign({ id: this._id, email: this.email, role: this.role },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: process.env.JWT_EXPIRY,
-            }
-        )
+        const token = jwt.sign({ _id: this._id, email: this.email, username: this.username }, process.env.JWT_SECRET_KEY, { expiresIn: process.env.JWT_EXPIRY });
+        return token;
     },
 
     comparePassword: async function (plainTextPassword) {
         return await bcrypt.compare(plainTextPassword, this.password);
     },
 
-    generatePasswordResetToken: async function () {
-        const resetToken = crypto.randomBytes(20).toString('hex');
+    generateOTP: function () {
+        return new Promise((resolve, reject) => {
+            this.forgotPasswordOTP = Math.floor(1000 + Math.random() * 9000).toString();
+            this.forgotPasswordExpiry = Date.now() + 3 * 60 * 1000;
 
-        this.forgotPasswordToken = crypto
-            .createHash('sha256')
-            .update(resetToken)
-            .digest('hex')
+            this.save()
+            .then(() => {
+                resolve(this.forgotPasswordOTP);
+            })
+            .catch((error) => {
+                reject(error);
+            });
+        });
+    },
+    
 
-        this.forgotPasswordExpiry = Date.now() + 15 * 60 * 1000;  // 15 min from now
-        return resetToken;
+    verifyOTP: function (userEnteredOTP) {
+        if (userEnteredOTP === this.forgotPasswordOTP) {
+            
+            if (Date.now() <= this.forgotPasswordExpiry) {
+            
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     },
 
 }
