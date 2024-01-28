@@ -1,9 +1,8 @@
-
 const User = require('../models/user.models')
 const asyncHandler = require('../middlewares/asyncHandler.middleware');
 const AppError = require('../utils/error.utils')
 const sendEmail = require('../utils/mail.utils')
-const generateMessage = require('../utils/generateMessage')
+const {generateMessage, generateMessagePass}= require('../utils/generateMessage')
 
 
 const cookieOptions = {
@@ -133,6 +132,10 @@ const verifyOTP = asyncHandler(
         if (password) {
             user.password = password;
             await user.save();
+            const subject = 'Password change successfully'
+            const message = generateMessagePass(user);
+            await sendEmail(email, subject, message);
+
             return res.status(200).json({
                 success: true,
                 message: 'Password change succesfully',  // Update the message
