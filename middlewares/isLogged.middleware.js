@@ -8,12 +8,14 @@ const jwt = require('jsonwebtoken')
 const isLoggedIn = asyncHandler(async (req, res, next) => {
 
     const { token } = req.cookies;
+    console.log('token', token);
+    
     if (!token) {
         return next(new AppError("Unauthorized, please login to continue", 401));
     }
 
     // Decoding the token using jwt package verify method
-    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY);
 
     // If no decode send the message unauthorized
     if (!decoded) {

@@ -6,15 +6,20 @@ const {generateMessage, generateMessagePass}= require('../utils/generateMessage'
 
 
 const cookieOptions = {
-    maxAge: 3 * 24 * 60 * 1000,
-    httpOnly: true,
-    secure: false,
-    sameSite: 'Lax',
+    maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days in milliseconds
+    httpOnly: false, // Change based on your security needs
+    // secure: process.env.NODE_ENV === 'production', // Ensure it's true in production
+    // sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax', // Adjust based on your environment
+    // domain: process.env.NODE_ENV === 'production' ? 'yourdomain.com' : undefined, // Adjust based on your environment
+    // path: '/', // Adjust based on your application's path structure
 };
 
-const register = asyncHandler(async (req, res, next) => {
-    let { email, password, username, name } = req.body.user;
 
+
+
+const register = asyncHandler(async (req, res, next) => {
+    let { email, password, username, name } = req.body;
+   
     if (!email || !password || !username || !name) {
         throw next(new AppError('All fields is required', 404));
     }
@@ -39,15 +44,16 @@ const register = asyncHandler(async (req, res, next) => {
 
     res.cookie('token', token, cookieOptions);
 
-    res.status(201).json({
+    res.status(200).json({
         success: true,
         message: 'User registered successfully',
         newUser,
+        token
     });
 })
 
 const login = asyncHandler(async (req, res, next) => {
-    const { email, password } = req.body.user;
+    const { email, password } = req.body;
 
     if (!email || !password) {
         throw next(new AppError('All fields is required', 404));
@@ -72,6 +78,7 @@ const login = asyncHandler(async (req, res, next) => {
 })
 
 const logout = asyncHandler(async (req, res, next) => {
+    console.log(req.user);
     res.cookie('token', null, {
         secure: true,
         maxAge: 0,
@@ -154,10 +161,21 @@ const verifyOTP = asyncHandler(
     }
 )
 
+const isLogin = asyncHandler(
+ async ( req, res, next)=>{
+    res.status(200).json({
+        success: true,
+        message: 'you are logged in', 
+        user: req.user 
+    });
+ }
+)
+
 module.exports = {
     register,
     login,
     logout,
     forgotPassword,
-    verifyOTP
+    verifyOTP,
+    isLogin
 }

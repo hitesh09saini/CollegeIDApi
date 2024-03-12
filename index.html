@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElectraOptima API Status</title>
+     <link rel="shortcut icon" href="https://res.cloudinary.com/hitesh09/image/upload/v1710257027/solar-energy_wmqs3p.png" type="image/x-icon">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 100px auto;
+            background-color: #292929;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #4caf50;
+        }
+
+        p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        #logo {
+            max-width: 100px;
+            margin-bottom: 20px;
+        }
+
+        #datetime {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="logo" src="https://res.cloudinary.com/hitesh09/image/upload/v1710257027/solar-energy_wmqs3p.png" alt="ElectraOptima Logo">
+        <h1>ElectraOptima API Status</h1>
+        <p>API is currently running smoothly.</p>
+        <p>Created by Hitesh Saini, ElectraOptima Technology Private Limited.</p>
+        <div id="datetime"></div>
+    </div>
+
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' };
+            const formattedDateTime = now.toLocaleDateString('en-US', options);
+            document.getElementById('datetime').innerText = formattedDateTime;
+        }
+
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // Initial call
+    </script>
+</body>
+</html>
